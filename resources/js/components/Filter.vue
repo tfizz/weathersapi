@@ -8,10 +8,10 @@
                 <div class="col-md-6 text-right">
                     By
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label @click="defaultFilter = true" class="btn btn-sm btn-info active">
+                        <label @click="defaultFilter = true;reset()" class="btn btn-sm btn-info active">
                             <input type="radio" name="options" id="option1" autocomplete="off" checked> Date
                         </label>
-                        <label @click="defaultFilter = false" class="btn btn-sm btn-info">
+                        <label @click="defaultFilter = false;reset()" class="btn btn-sm btn-info">
                             <input type="radio" name="options" id="option2" autocomplete="off"> Coordinates
                         </label>
                     </div>
@@ -32,11 +32,11 @@
                 <div class="row" v-if="!defaultFilter">
                     <div class="col-md-6 form-group">
                         <label for="lat">Latitude</label>
-                        <input class="form-control" required v-model="weather.location.lat" type="number" id="lat" placeholder="lat">
+                        <input class="form-control" required v-model="weather.location.lat" type="text" id="lat" placeholder="lat">
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="lon">Longitide</label>
-                        <input class="form-control" required v-model="weather.location.lon" type="number" id="lon" placeholder="lon">
+                        <input class="form-control" required v-model="weather.location.lon" type="text" id="lon" placeholder="lon">
                     </div>
                 </div>
 
@@ -90,6 +90,10 @@
 
             cancelFilter(){
                 this.$emit("closeFilter");
+                this.reset();
+            },
+
+            reset(){
                 this.weather.location.lon = "";
                 this.weather.location.lat = "";
                 this.weather.startDate = "";

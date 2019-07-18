@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <appform :record="weather" v-show="showAdd" v-on:closeAdd="toggleAdd" v-on:refreshWeathers="fetchRecords"></appform>
+        <appform v-show="showAdd" v-on:closeAdd="toggleAdd" v-on:refreshWeathers="fetchRecords"></appform>
 
         <appfilter v-show="showFilter" v-on:closeFilter="toggleFilter" v-on:updateData="updateData"></appfilter>
 
@@ -34,8 +34,8 @@
                                 {{ temp }}F
                             </span>
                         </p>
-                        <a class="card-link text-muted">{{ weather.date }}</a>
-                        <a href="javascript:;" @click="edit(weather)" class="card-link">edit</a>
+                        <a class="card-link text-muted"><small>{{ weather.date }}</small></a>
+                        <!-- <a href="javascript:;" @click="edit(weather)" class="card-link">edit</a> -->
                     </div>
                 </div>
             </div>
@@ -117,8 +117,7 @@
             },
 
             edit(record){
-                this.weather = record;
-                this.toggleAdd();
+                
             }
 
         }

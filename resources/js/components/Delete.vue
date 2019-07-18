@@ -24,11 +24,11 @@
                 <div class="row">
                     <div class="col-md-6 form-group">
                         <label for="">Latitude</label>
-                        <input class="form-control" required v-model="options.lat" type="number" id="lat" placeholder="lat">
+                        <input class="form-control" required v-model="options.lat" type="text" id="lat" placeholder="lat">
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="">Longitude</label>
-                        <input class="form-control" required v-model="options.lon" type="number" id="lon" placeholder="lon">
+                        <input class="form-control" required v-model="options.lon" type="text" id="lon" placeholder="lon">
                     </div>
                 </div>
 
@@ -57,6 +57,11 @@
 
         methods: {
             async deleteData(){
+
+                if(isNaN(parseFloat(this.options.lat)) || isNaN(parseFloat(this.options.lon))){
+                    alert("Invalid coordinates");
+                    return;
+                }
 
                 if(confirm("Are you sure you want to delete records?")){
                     this.processing = true;

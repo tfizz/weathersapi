@@ -50,9 +50,6 @@
 <script>
     export default {
 
-        props: ['record'],
-        
-
         data(){
             return {
                 weathers: [],
@@ -73,26 +70,23 @@
             }
         },
 
-        created(){
-            if(this.record){
-                this.weather = this.record;
-                this.edit = true;
-                alert("created");
-            }
-        },
-
         methods: {
             async addData(){
+
+                if(isNaN(parseFloat(this.weather.location.lat)) || isNaN(parseFloat(this.weather.location.lon))){
+                    alert("Invalid coordinates");
+                    return;
+                }
+
+                // split temperature into array of floating point numbers
+                var temp_string = this.weather.temperature;
+                var temps = this.weather.temperature.split(",").map(function(item){
+                    return parseFloat(item,10);
+                });
+                this.weather.temperature = temps;
+
                 if(this.edit === false){
                     // add data
-                    // split temperature into array of floating point numbers
-                    var temp_string = this.weather.temperature;
-                    var temps = this.weather.temperature.split(",").map(function(item){
-                        return parseFloat(item,10);
-                    });
-                    this.weather.temperature = temps;
-
-
                     var vm = this;
                     try{
                         vm.processing = true;
@@ -128,8 +122,46 @@
                     catch(err){
                         vm.processing = false;
                         console.log(err);
+                    }         
+                }
+                else{
+                    // update data
+                    var vm = this;
+                    try{
+                        vm.processing = true;
+
+                        let result = await fetch("api/weather",{
+                            method: "put",
+                            body: JSON.stringify(this.weather),
+                            headers: {
+                                'content-type': 'application/json'
+                            }
+                        }).then(res => res.json());
+
+                        if(result.message){
+                            this.weather.id = '';
+                            this.weather.date = '';
+                            this.weather.location.state = '';
+                            this.weather.location.city = '';
+                            this.weather.location.lat = '';
+                            this.weather.location.lon = '';
+                            this.weather.temperature = '';
+
+                            vm.$emit("refreshWeathers");
+
+                            alert(result.message);
+                        }
+                        else{
+                            this.weather.temperature = temp_string;
+                            alert(result.error.temperature ? result.error.temperature[0] : result.error);
+                        }
+
+                        vm.processing = false;
                     }
-                    
+                    catch(err){
+                        vm.processing = false;
+                        console.log(err);
+                    }
                 }
             },
 
